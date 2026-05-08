@@ -7,14 +7,15 @@
   (let ((root (bt-make-node 1)))
     (bt-insert-left root 2)
     (bt-insert-right root 3)
-    (bt-insert-left (bt-node-left root) 4)
-    (bt-insert-right (bt-node-left root) 5)
+    (let ((left-child (dsa::bt-node-left root)))
+      (bt-insert-left left-child 4)
+      (bt-insert-right left-child 5))
     (assert-equal 5 (bt-size root) "BT size: ")
     (assert-equal 2 (bt-height root) "BT height: ")
 
     (let ((result nil))
       (bt-preorder root (lambda (v) (push v result)))
-      (assert-equal '(4 5 2 3 1) result "BT preorder: "))
+      (assert-equal '(3 5 4 2 1) result "BT preorder: "))
     (let ((result nil))
       (bt-inorder root (lambda (v) (push v result)))
       (assert-equal '(4 2 5 1 3) result "BT inorder: "))
@@ -38,8 +39,8 @@
     (assert-equal '(20 30 40 50 60 70 80) (bst-to-list bst) "BST inorder: ")
     (assert-true (bst-find bst 40) "BST find 40: ")
     (assert-false (bst-find bst 99) "BST find missing: ")
-    (assert-equal 20 (bst-node-value (bst-min bst)) "BST min: ")
-    (assert-equal 80 (bst-node-value (bst-max bst)) "BST max: ")
+    (assert-equal 20 (dsa::bst-node-value (bst-min bst)) "BST min: ")
+    (assert-equal 80 (dsa::bst-node-value (bst-max bst)) "BST max: ")
 
     ;; Delete leaf
     (bst-delete bst (bst-find bst 20))
@@ -48,7 +49,7 @@
     ;; Delete node with one child
     (bst-insert bst 20)
     (bst-delete bst (bst-find bst 30))
-    (assert-equal '(20 40 50 60 70 80) (bst-to-list bst) "BST delete one child: ")))
+    (assert-equal '(20 40 50 60 70 80) (bst-to-list bst) "BST delete one child: "))
 
   ;; AVL Tree
   (let ((avl (avl-make)))

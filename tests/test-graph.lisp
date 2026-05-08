@@ -55,7 +55,6 @@
     (assert-false (dag-has-cycle-p g) "DAG no cycle: ")
     (let ((topo (dag-topo-sort g)))
       (assert-equal 6 (length topo) "Topo sort length: ")
-      ;; Verify 5 comes before 2, 4 before 0 etc
       (assert-true (< (position 5 topo) (position 2 topo)) "5 before 2: ")))
 
   ;; DAG with cycle
@@ -97,4 +96,4 @@
     (assert-false (sl-find sl 99) "SL find missing: ")
     (assert-equal '(1 3 5 7) (sl-to-list sl) "SL sorted: ")
     (assert-true (sl-delete sl 3) "SL delete 3: ")
-    (assert-equal '(1 5 7) (sl-to-list sl) "SL after delete: "))
+    (assert-equal '(1 5 7) (sl-to-list sl) "SL after delete: ")))

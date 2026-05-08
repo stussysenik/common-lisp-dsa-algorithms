@@ -26,4 +26,4 @@
       (assert-equal #(42) (quick-sort single) "Quick sort single: "))
 
     (let ((dup #(3 1 3 1 2 2)))
-      (assert-equal #(1 1 2 2 3 3) (merge-sort dup) "Merge sort dup: ")))
+      (assert-equal #(1 1 2 2 3 3) (merge-sort dup) "Merge sort dup: "))))
