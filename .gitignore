@@ -1,0 +1,5 @@
+*.fasl
+*.lx64fsl
+*.lisp-temp
+.cache/
+qlfc/
