@@ -24,7 +24,7 @@
          (push ',name *test-failures*)))))
 
 (defun assert-equal (expected actual &optional (msg ""))
-  (unless (equal expected actual)
+  (unless (equalp expected actual)
     (error "~AExpected ~S but got ~S" msg expected actual)))
 
 (defun assert-true (val &optional (msg ""))
