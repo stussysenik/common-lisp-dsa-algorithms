@@ -54,7 +54,7 @@
   ;; Longest Common Subsequence
   (let ((a "ABCDGH")
         (b "AEDFHR"))
-    (assert-equal 4 (longest-common-subsequence a b) "LCS length: "))
+    (assert-equal 3 (longest-common-subsequence a b) "LCS length: "))
 
   ;; Longest Increasing Subsequence
   (let ((seq #(10 9 2 5 3 7 101 18)))
