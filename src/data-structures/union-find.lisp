@@ -2,7 +2,7 @@
 
 ;; Union-Find / Disjoint Set Union — near O(1) amortized
 
-(defstruct (union-find (:constructor uf-make (size))
+(defstruct (union-find (:constructor %make-uf (parent rank count))
                        (:conc-name uf-))
   (parent nil :type simple-vector)
   (rank nil :type simple-vector)
@@ -10,10 +10,9 @@
 
 (defun uf-make (size)
   "Create DSU with SIZE elements, each in own set."
-  (let ((uf (make-union-find)))
-    (setf (uf-parent uf) (make-array size :initial-element 0)
-          (uf-rank uf) (make-array size :initial-element 0)
-          (uf-count uf) size)
+  (let ((uf (%make-uf (make-array size :initial-element 0)
+                       (make-array size :initial-element 0)
+                       size)))
     (dotimes (i size)
       (setf (aref (uf-parent uf) i) i))
     uf))

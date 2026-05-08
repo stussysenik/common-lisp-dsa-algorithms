@@ -89,8 +89,8 @@
 
 (defun manacher (s)
   "Manacher's algorithm — longest palindromic substring in O(n). Returns (start . length)."
-  (let* ((t (concatenate 'string "#" (map 'string (lambda (c) (format nil "~C#" c)) s)))
-         (n (length t))
+  (let* ((t-str (concatenate 'string "#" (map 'string (lambda (c) (format nil "~C#" c)) s)))
+         (n (length t-str))
          (p (make-array n :initial-element 0 :element-type 'fixnum))
          (center 0) (right 0)
          (max-len 0) (max-center 0))
@@ -101,8 +101,8 @@
         ;; Expand
         (loop while (and (>= (- i (1+ (aref p i))) 0)
                          (< (+ i (1+ (aref p i))) n)
-                         (char= (char t (- i (1+ (aref p i))))
-                                (char t (+ i (1+ (aref p i))))))
+                         (char= (char t-str (- i (1+ (aref p i))))
+                                (char t-str (+ i (1+ (aref p i))))))
               do (incf (aref p i)))
         (when (> (+ i (aref p i)) right)
           (setf center i
