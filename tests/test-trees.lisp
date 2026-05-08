@@ -18,13 +18,13 @@
       (assert-equal '(3 5 4 2 1) result "BT preorder: "))
     (let ((result nil))
       (bt-inorder root (lambda (v) (push v result)))
-      (assert-equal '(4 2 5 1 3) result "BT inorder: "))
+      (assert-equal '(3 1 5 2 4) result "BT inorder: "))
     (let ((result nil))
       (bt-postorder root (lambda (v) (push v result)))
-      (assert-equal '(4 5 2 3 1) result "BT postorder: "))
+      (assert-equal '(1 3 2 5 4) result "BT postorder: "))
     (let ((result nil))
       (bt-level-order root (lambda (v) (push v result)))
-      (assert-equal '(3 2 5 4 1) result "BT level-order: ")))
+      (assert-equal '(5 4 3 2 1) result "BT level-order: ")))
 
   ;; BST
   (let ((bst (bst-make)))

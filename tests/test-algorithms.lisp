@@ -33,7 +33,7 @@
 
   ;; Z Algorithm
   (let ((matches (z-algorithm "AABAACAADAABAABA" "AABA")))
-    (assert-equal 2 (length matches) "Z-algo matches: "))
+    (assert-equal 3 (length matches) "Z-algo matches: "))
 
   ;; Manacher
   (let ((result (manacher "babad")))
