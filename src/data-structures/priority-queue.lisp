@@ -5,8 +5,8 @@
 (defstruct (priority-queue (:constructor pq-make (&key (kind :max)))
                            (:conc-name pq-))
   (heap (if (eq kind :max)
-            (heap-make :test #'>)
-            (heap-make :test #'<))
+            (heap-make :test (lambda (a b) (> (if (consp a) (car a) a) (if (consp b) (car b) b))))
+            (heap-make :test (lambda (a b) (< (if (consp a) (car a) a) (if (consp b) (car b) b)))))
    :type heap)
   (kind kind :type (member :min :max)))
 

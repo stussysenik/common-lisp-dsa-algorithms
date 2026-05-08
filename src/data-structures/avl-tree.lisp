@@ -70,7 +70,7 @@
   "Recursive insert helper. Returns possibly new subtree root."
   (let ((test (avl-test tree)))
     (cond
-      ((null node) (avl-node-make value))
+      ((null node) (return-from %avl-insert-node (avl-node-make value)))
       ((funcall test value (avl-node-value node))
        (setf (avl-node-left node) (%avl-insert-node tree (avl-node-left node) value))
        (setf (avl-node-parent (avl-node-left node)) node))
@@ -101,24 +101,33 @@
 
 (defun %avl-delete-node (tree node value)
   "Recursive delete. Returns possibly new subtree root."
-  (if (null node) (return-from %avl-delete-node nil))
-  (let ((test (avl-test tree)))
+  (when (null node) (return-from %avl-delete-node nil))
+  (let ((test (avl-test tree))
+        (targetp nil))
     (cond
       ((funcall test value (avl-node-value node))
-       (setf (avl-node-left node) (%avl-delete-node tree (avl-node-left node) value)))
+       (setf (avl-node-left node) (%avl-delete-node tree (avl-node-left node) value))
+       (setf targetp t))
       ((funcall test (avl-node-value node) value)
-       (setf (avl-node-right node) (%avl-delete-node tree (avl-node-right node) value)))
+       (setf (avl-node-right node) (%avl-delete-node tree (avl-node-right node) value))
+       (setf targetp t))
       (t
-       (cond
-         ((null (avl-node-left node)) (return-from %avl-delete-node (avl-node-right node)))
-         ((null (avl-node-right node)) (return-from %avl-delete-node (avl-node-left node)))
-         (t
-          (let ((succ (%avl-min-node (avl-node-right node))))
-            (setf (avl-node-value node) (avl-node-value succ))
-            (setf (avl-node-right node)
-                  (%avl-delete-node tree (avl-node-right node) (avl-node-value succ)))))))))
-  (%avl-update-height node)
-  (%avl-rebalance node))
+       (setf targetp t)
+       (setf node
+             (cond
+               ((null (avl-node-left node)) (avl-node-right node))
+               ((null (avl-node-right node)) (avl-node-left node))
+               (t
+                (let ((succ (%avl-min-node (avl-node-right node))))
+                  (setf (avl-node-value node) (avl-node-value succ))
+                  (setf (avl-node-right node)
+                        (%avl-delete-node tree (avl-node-right node) (avl-node-value succ)))
+                  node))))))
+    (if (and targetp node)
+        (progn
+          (%avl-update-height node)
+          (%avl-rebalance node))
+        node)))
 
 (defun avl-delete (tree value)
   "Delete VALUE. O(log n), self-balancing."

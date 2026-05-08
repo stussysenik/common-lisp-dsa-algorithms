@@ -24,13 +24,43 @@
          (push ',name *test-failures*)))))
 
 (defun assert-equal (expected actual &optional (msg ""))
-  (unless (equalp expected actual)
-    (error "~AExpected ~S but got ~S" msg expected actual)))
+  (if (equalp expected actual)
+      (incf *tests-passed*)
+      (progn
+        (incf *tests-failed*)
+        (push (format nil "~AExpected ~S but got ~S" msg expected actual) *test-failures*)
+        (warn "~AExpected ~S but got ~S" msg expected actual))))
 
 (defun assert-true (val &optional (msg ""))
-  (unless val
-    (error "~AExpected true, got ~S" msg val)))
+  (if val
+      (incf *tests-passed*)
+      (progn
+        (incf *tests-failed*)
+        (push (format nil "~AExpected true, got ~S" msg val) *test-failures*)
+        (warn "~AExpected true, got ~S" msg val))))
 
 (defun assert-false (val &optional (msg ""))
-  (when val
-    (error "~AExpected false, got ~S" msg val)))
+  (if (null val)
+      (incf *tests-passed*)
+      (progn
+        (incf *tests-failed*)
+        (push (format nil "~AExpected false, got ~S" msg val) *test-failures*)
+        (warn "~AExpected false, got ~S" msg val))))
+
+(defun run-all-tests ()
+  (setf *tests-passed* 0
+        *tests-failed* 0
+        *test-failures* nil)
+  (format t "~2%=== RUNNING ALL DSA TESTS ===~2%")
+  (test-dynamic-array)
+  (test-linked-list)
+  (test-stack-queue)
+  (test-heap)
+  (test-trees)
+  (test-graph)
+  (test-sorting)
+  (test-algorithms)
+  (format t "~2%=== DONE: ~D passed, ~D failed ===~2%" *tests-passed* *tests-failed*)
+  (when *test-failures*
+    (format t "Failures: ~{~A~^, ~}~%" *test-failures*))
+  (values *tests-passed* *tests-failed*))

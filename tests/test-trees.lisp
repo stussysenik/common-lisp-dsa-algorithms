@@ -96,7 +96,7 @@
 
   ;; Segment Tree
   (let ((st (seg-make #(1 3 5 7 9 11))))
-    (assert-equal 15 (seg-query st 0 2) "Seg sum [0,2]: ")
+    (assert-equal 9 (seg-query st 0 2) "Seg sum [0,2]: ")
     (assert-equal 36 (seg-query st 0 5) "Seg sum all: ")
     (seg-update st 2 10)
-    (assert-equal 20 (seg-query st 0 2) "Seg after update: ")))
+    (assert-equal 14 (seg-query st 0 2) "Seg after update: ")))

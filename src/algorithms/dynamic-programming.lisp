@@ -98,7 +98,7 @@
   (let ((dp (make-array (1+ amount) :initial-element most-positive-fixnum :element-type 'fixnum)))
     (setf (aref dp 0) 0)
     (loop for i from 1 to amount do
-      (dolist (coin coins)
+      (loop for coin across coins do
         (when (<= coin i)
           (let ((prev (aref dp (- i coin))))
             (when (/= prev most-positive-fixnum)
@@ -110,7 +110,7 @@
   "Number of ways to make AMOUNT (unbounded). O(n*amount)."
   (let ((dp (make-array (1+ amount) :initial-element 0 :element-type 'fixnum)))
     (setf (aref dp 0) 1)
-    (dolist (coin coins)
+    (loop for coin across coins do
       (loop for i from coin to amount do
         (incf (aref dp i) (aref dp (- i coin)))))
     (aref dp amount)))

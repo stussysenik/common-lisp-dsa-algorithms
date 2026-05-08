@@ -58,7 +58,7 @@
 
   ;; Longest Increasing Subsequence
   (let ((seq #(10 9 2 5 3 7 101 18)))
-    (assert-equal #(2 3 7 101) (longest-increasing-subsequence seq) "LIS: "))
+    (assert-equal #(2 3 7 18) (longest-increasing-subsequence seq) "LIS: "))
 
   ;; Edit distance
   (assert-equal 3 (edit-distance "kitten" "sitting") "Edit distance: ")
@@ -70,7 +70,7 @@
 
   ;; Longest Common Substring
   (let ((result (lcs-string "ABABC" "BABCA")))
-    (assert-equal "ABAB" result "LCS substring: "))
+    (assert-equal "BABC" result "LCS substring: "))
 
   ;; LRU Cache
   (let ((lru (lru-make 3)))
