@@ -1,42 +1,46 @@
 (in-package #:dsa)
 
-;; Bloom Filter — probabilistic set data structure. No false negatives, configurable false positive rate.
+;; Bloom Filter — probabilistic set, no false negatives
 
-(defstruct (bloom-filter (:constructor bf-make (expected-items false-positive-rate))
+(defstruct (bloom-filter (:constructor bf-make (m k))
                          (:conc-name bf-))
   (bits nil :type simple-bit-vector)
-  (size 0 :type fixnum)
-  (hash-count 0 :type fixnum))
+  (m 0 :type fixnum)
+  (k 0 :type fixnum))
 
 (defun bf-make (expected-items false-positive-rate)
-  "Create a bloom filter with optimal size and hash count."
-  (let* ((n (float expected-items 1.0))
-         (p (float false-positive-rate 1.0))
-         (m (ceiling (- (/ (* n (log p)) (expt (log 2) 2)))))
+  "Create optimal bloom filter for EXPECTED-ITEMS and FALSE-POSITIVE-RATE."
+  (let* ((n (float expected-items))
+         (p (float false-positive-rate))
+         (m (ceiling (- (/ (* n (log p)) (* (log 2) (log 2))))))
          (k (max 1 (round (* (/ m n) (log 2))))))
-    (make-bloom-filter :bits (make-array m :element-type 'bit :initial-element 0)
-                       :size m
-                       :hash-count k)))
+    (bf-make (max 16 m) k)))
 
-(defun %bf-double-hash (item seed size)
-  "Double hashing: (hash1(item) + seed * hash2(item)) mod size"
-  (mod (+ (sxhash item)
-          (* seed (sxhash (cons seed item))))
-       size))
+(defun %bf-hash (item i m)
+  (mod (+ (sxhash item) (* i (sxhash (cons i item)))) m))
 
 (defun bf-add (bf item)
-  "Add ITEM to the bloom filter."
-  (dotimes (i (bf-hash-count bf))
-    (setf (sbit (bf-bits bf) (%bf-double-hash item (1+ i) (bf-size bf))) 1))
+  (dotimes (i (bf-k bf))
+    (setf (sbit (bf-bits bf) (%bf-hash item i (bf-m bf))) 1))
   bf)
 
 (defun bf-contains-p (bf item)
-  "Check if ITEM might be present. No false negatives, configurable false positives."
-  (dotimes (i (bf-hash-count bf) t)
-    (when (zerop (sbit (bf-bits bf) (%bf-double-hash item (1+ i) (bf-size bf))))
+  (dotimes (i (bf-k bf) t)
+    (when (zerop (sbit (bf-bits bf) (%bf-hash item i (bf-m bf))))
       (return nil))))
 
 (defun bf-clear (bf)
-  "Clear all bits in the filter."
   (fill (bf-bits bf) 0)
   bf)
+
+(defun bf-make (expected-items false-positive-rate)
+  "Create optimal bloom filter."
+  (let* ((n (float expected-items))
+         (p (float false-positive-rate))
+         (m (ceiling (- (/ (* n (log p)) (* (log 2) (log 2))))))
+         (k (max 1 (round (* (/ m n) (log 2))))))
+    (let ((bf (make-bloom-filter)))
+      (setf (bf-bits bf) (make-array m :element-type 'bit :initial-element 0)
+            (bf-m bf) m
+            (bf-k bf) k)
+      bf)))
